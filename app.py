@@ -7,6 +7,7 @@ from loader.views import loader
 app = Flask(__name__)
 
 
+# Без этого видит только папку static, изображения не грузятся (404)
 @app.route('/uploads/images/<path:path>')
 def static_dir(path):
     return send_from_directory('uploads/images', path)

@@ -1,14 +1,29 @@
-import json
-from json import load
+from json import load, dump, JSONDecodeError
 
 
 def load_data_from_json(path):
     """
     Возвращает все данные из файла json
     """
-    with open(path, 'r', encoding='utf-8') as file:     # открытие файла
-        data = load(file)                               # загрузка данных
+    try:
+        with open(path, 'r', encoding='utf-8') as file:     # открытие файла
+            data = load(file)                               # загрузка данных
+    except FileNotFoundError:
+        print(f'ERROR: Not file {path} found.')
+        return None
+    except JSONDecodeError:
+        print(f'ERROR: File {path} not JSON format.')
+        return None
+    else:
+        return data
 
+
+def save_data_to_json(path, data):
+    """
+    Запись данных в файл json
+    """
+    with open(path, 'w', encoding='utf-8') as file:
+        dump(data, file)
     return data
 
 
@@ -33,13 +48,13 @@ def save_picture(pict):
     """
     name = pict.filename
     ext = name.split('.')
-    ext = ext[-1]
+    ext = ext[-1].lower()
 
     if ext in ['bmp', 'jpg', 'jpeg', 'png']:
         pict.save(f'./uploads/images/{name}')
         return f'uploads/images/{name}'
     else:
-        return
+        return None
 
 
 def save_post(post, posts, path):
@@ -48,6 +63,7 @@ def save_post(post, posts, path):
     """
     posts.append(post)
 
-    with open(path, 'w', encoding='utf-8') as file:
-        json.dump(posts, file)
+    save_data_to_json(path, posts)
+
     return posts
+
