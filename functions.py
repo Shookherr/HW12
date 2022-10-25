@@ -1,4 +1,5 @@
 import json
+from json import load
 
 
 def load_data_from_json(path):
@@ -6,7 +7,7 @@ def load_data_from_json(path):
     Возвращает все данные из файла json
     """
     with open(path, 'r', encoding='utf-8') as file:     # открытие файла
-        data = json.load(file)                          # загрузка данных
+        data = load(file)                               # загрузка данных
 
     return data
 
@@ -24,3 +25,29 @@ def search_posts(str_, posts):
             continue
 
     return subposts
+
+
+def save_picture(pict):
+    """
+    Сохранение картинки к посту на диск
+    """
+    name = pict.filename
+    ext = name.split('.')
+    ext = ext[-1]
+
+    if ext in ['bmp', 'jpg', 'jpeg', 'png']:
+        pict.save(f'./uploads/images/{name}')
+        return f'uploads/images/{name}'
+    else:
+        return
+
+
+def save_post(post, posts, path):
+    """
+    Сохранение нового поста
+    """
+    posts.append(post)
+
+    with open(path, 'w', encoding='utf-8') as file:
+        json.dump(posts, file)
+    return posts
